@@ -12,6 +12,11 @@ builder.Services.AddDbContext<DraftDb>(options => options.UseNpgsql(
 var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+if (Directory.Exists(app.Environment.WebRootPath))
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
 
 await using (var scope = app.Services.CreateAsyncScope())
     await scope.ServiceProvider.GetRequiredService<DraftDb>().Database.EnsureCreatedAsync();
@@ -19,3 +24,6 @@ await using (var scope = app.Services.CreateAsyncScope())
 app.MapGet("/api/health", () => Results.Ok());
 app.MapDocuments();
 app.Run();
+
+public partial class Program;
+

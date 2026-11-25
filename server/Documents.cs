@@ -73,14 +73,8 @@ public static class Documents
             if (document.OwnerId != Actor(http)) return Error(403, "Only the owner can manage sharing.");
             if (userId == document.OwnerId || !await db.Users.AnyAsync(u => u.Id == userId))
                 return Error(400, "Choose another demo user.");
-            if (db.Database.IsNpgsql())
-                await db.Database.ExecuteSqlInterpolatedAsync(
-                    $"""INSERT INTO "Shares" ("DocumentId", "UserId") VALUES ({id}, {userId}) ON CONFLICT DO NOTHING""");
-            else if (!await db.Shares.AnyAsync(s => s.DocumentId == id && s.UserId == userId))
-            {
-                db.Shares.Add(new DocumentShare { DocumentId = id, UserId = userId });
-                await db.SaveChangesAsync();
-            }
+            await db.Database.ExecuteSqlInterpolatedAsync(
+                $"""INSERT INTO "Shares" ("DocumentId", "UserId") VALUES ({id}, {userId}) ON CONFLICT DO NOTHING""");
             return Results.NoContent();
         });
 

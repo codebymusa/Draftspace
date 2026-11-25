@@ -5,3 +5,4 @@
 
 - Milestone 3. Codex built the responsive dashboard and TipTap editor with manual save. The TypeScript and Vite production build passed.
 - Milestone 4. Codex connected UTF-8 import, sharing and debounced autosave, and lazy-loaded TipTap. The initial build caught a file-picker handler type mismatch. After correcting it, the production build passed.
+- Milestone 5. An initial SQLite-based test run found a provider-specific sorting limitation and a transitive SQLite audit warning. With Docker available, Codex switched the suite to isolated PostgreSQL databases. All six Release tests passed. The production Docker image built and the Compose stack started.
