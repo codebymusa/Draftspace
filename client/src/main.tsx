@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client'
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { api, message, type Draft, type Summary, type User } from './api'
-import { Editor } from './Editor'
+const Editor = lazy(() => import('./Editor'))
 import './style.css'
 
 function App() {
@@ -41,20 +41,24 @@ function App() {
     return () => controller.abort()
   }, [user, id, attempt])
 
-  async function create() {
+  async function create(file?: File) {
     setBusy(true)
     setError('')
     try {
-      const doc = await api<Draft>('documents', user, { method: 'POST' })
+      const form = file ? new FormData() : undefined
+      if (file && (!/\.txt$/i.test(file.name) || !file.size || file.size > 262144))
+        throw new Error('Choose a .txt file between 1 byte and 256 KB.')
+      if (file) form?.append('file', file)
+      const doc = await api<Draft>(file ? 'documents/import' : 'documents', user, { method: 'POST', body: form })
       location.hash = doc.id
     } catch (e) { setError(message(e)) }
     finally { setBusy(false) }
   }
 
-  if (id && draft?.id === id) return <Editor key={user + ':' + id} draft={draft} user={user} />
+  if (id && draft?.id === id) return <Suspense fallback={<main className="dashboard" role="status">Opening document…</main>}><Editor key={user + ':' + id} draft={draft} user={user} users={users} /></Suspense>
 
   return <>
-    <header className="top"><div className="brand"><span aria-hidden="true">▤</span> DraftSpace</div>
+    <header className="top"><div className="brand"><span aria-hidden="true">â–¤</span> DraftSpace</div>
       <label className="switch">Demo user
         <select value={user} disabled={busy || users.length === 0} onChange={e => {
           const next = Number(e.target.value)
@@ -65,11 +69,19 @@ function App() {
     </header>
     <main className="dashboard">
       <div className="intro"><div><h1>Documents</h1><p>Write and share documents in your workspace.</p></div>
-        {id ? <a className="button" href="#">← Documents</a> :
-          <button className="primary" disabled={busy || loading || users.length === 0} onClick={create}>＋ New document</button>}
+        {id ? <a className="button" href="#">â† Documents</a> :
+          <div className="flex flex-wrap gap-2">
+          <input hidden id="import-file" type="file" accept=".txt,text/plain" onChange={e => {
+            const file = e.currentTarget.files?.[0]
+            e.currentTarget.value = ''
+            if (file) void create(file)
+          }} />
+          <button className="button" disabled={busy || loading || !users.length} onClick={() => document.getElementById('import-file')?.click()}>Import document</button>
+          <button className="primary" disabled={busy || loading || !users.length} onClick={() => void create()}>+ New document</button>
+        </div>}
       </div>
       {error && <div className="error" role="alert">{error} <button onClick={() => setAttempt(n => n + 1)}>Retry</button></div>}
-      {loading ? <p role="status">Loading documents…</p> : !id && users.length > 0 && <>
+      {loading ? <p role="status">Loading documentsâ€¦</p> : !id && users.length > 0 && <>
         <DocumentList heading="My Documents" documents={documents.filter(doc => doc.isOwner)} empty="Create or import a document to get started." />
         <DocumentList heading="Shared with Me" documents={documents.filter(doc => !doc.isOwner)} empty="Documents shared with this demo user will appear here." />
       </>}
@@ -81,7 +93,7 @@ function DocumentList({ heading, documents, empty }: { heading: string; document
   return <section className="collection"><h2>{heading}</h2>
     {documents.length ? <ul>{documents.map(doc => <li key={doc.id}>
       <a className="document" href={'#' + doc.id}>
-        <span className="file-icon" aria-hidden="true">▤</span>
+        <span className="file-icon" aria-hidden="true">â–¤</span>
         <span className="details"><strong>{doc.title}</strong><small>{doc.isOwner ? 'Owned by you' : 'Owned by ' + doc.owner.name}</small></span>
         <time dateTime={doc.updatedAt}>{new Date(doc.updatedAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}</time>
       </a>
@@ -90,4 +102,5 @@ function DocumentList({ heading, documents, empty }: { heading: string; document
 }
 
 createRoot(document.getElementById('root')!).render(<App />)
+
 
