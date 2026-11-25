@@ -1,0 +1,44 @@
+@import "tailwindcss";
+@layer base {
+  body { @apply bg-slate-50 text-slate-900 antialiased; font-family: "Inter", system-ui, sans-serif; }
+  button, select { @apply cursor-pointer; }
+  button:disabled, select:disabled { @apply cursor-not-allowed opacity-50; }
+  :focus-visible { @apply outline-2 outline-offset-2 outline-indigo-600; }
+}
+.top { @apply min-h-16 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-5 py-3 sm:px-9; }
+.brand { @apply flex items-center gap-2 text-lg font-bold tracking-tight; }
+.brand span { @apply grid size-8 place-items-center rounded-lg bg-indigo-600 text-white; }
+.switch { @apply flex items-center gap-2 text-sm text-slate-600; }
+select, .button { @apply rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-800; }
+.primary { @apply rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700; }
+.dashboard { @apply mx-auto max-w-5xl px-5 py-10 sm:px-9 sm:py-16; }
+.intro { @apply mb-10 flex flex-wrap items-center justify-between gap-5; }
+.intro h1 { @apply mb-2 text-4xl font-semibold tracking-tight; }
+.intro p, .empty, .save-status { @apply text-sm text-slate-600; }
+.collection { @apply mb-9; }
+.collection h2 { @apply mb-3 text-base font-semibold; }
+.collection ul, .empty { @apply divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white; }
+.empty { @apply p-6; }
+.document { @apply flex items-center gap-3 px-4 py-4 hover:bg-indigo-50/50; }
+.file-icon { @apply grid size-9 shrink-0 place-items-center rounded-md bg-indigo-50 text-indigo-700; }
+.details { @apply grid flex-1 gap-0.5 min-w-0; }
+.details strong { @apply truncate text-sm font-semibold; }
+.details small, time { @apply text-xs text-slate-600; }
+time { @apply shrink-0; }
+.editor-top { @apply justify-start; }
+.save-status { @apply ml-auto; }
+.editor-shell { @apply mx-auto max-w-4xl p-3 sm:p-8; }
+.toolbar { @apply mb-4 flex flex-wrap gap-1 rounded-lg border border-slate-200 bg-white p-2; }
+.toolbar button { @apply rounded px-3 py-2 text-sm hover:bg-slate-100 aria-pressed:bg-indigo-100 aria-pressed:text-indigo-800; }
+.paper { @apply min-h-[70vh] rounded-lg border border-slate-200 bg-white p-5 shadow-sm sm:px-16 sm:py-12; }
+.title { @apply mb-7 w-full border-b border-slate-200 pb-4 text-2xl font-semibold tracking-tight sm:text-4xl; }
+.writing { @apply min-h-[50vh] break-words text-base leading-7 outline-none; white-space: pre-wrap; }
+.writing p { @apply mb-3; }
+.writing h1 { @apply mb-3 mt-6 text-3xl font-bold; }
+.writing h2 { @apply mb-3 mt-5 text-2xl font-semibold; }
+.writing h3 { @apply mb-2 mt-4 text-xl font-semibold; }
+.writing ul { @apply list-disc pl-6; }
+.writing ol { @apply list-decimal pl-6; }
+.error { @apply mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800; }
+.error button { @apply ml-2 font-semibold underline; }
+
