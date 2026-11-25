@@ -55,12 +55,12 @@ function App() {
     finally { setBusy(false) }
   }
 
-  if (id && draft?.id === id) return <Suspense fallback={<main className="dashboard" role="status">Opening document…</main>}><Editor key={user + ':' + id} draft={draft} user={user} users={users} /></Suspense>
+  if (id && draft?.id === id) return <Suspense fallback={<main className="dashboard" role="status">Opening document&hellip;</main>}><Editor key={user + ':' + id} draft={draft} user={user} users={users} /></Suspense>
 
   return <>
-    <header className="top"><div className="brand"><span aria-hidden="true">â–¤</span> DraftSpace</div>
+    <header className="top"><div className="brand"><span aria-hidden="true">&#9636;</span> DraftSpace</div>
       <label className="switch">Demo user
-        <select value={user} disabled={busy || users.length === 0} onChange={e => {
+        <select aria-label="Demo user" value={user} disabled={busy || users.length === 0} onChange={e => {
           const next = Number(e.target.value)
           localStorage.setItem('draftspace-user', String(next))
           setUser(next)
@@ -69,7 +69,7 @@ function App() {
     </header>
     <main className="dashboard">
       <div className="intro"><div><h1>Documents</h1><p>Write and share documents in your workspace.</p></div>
-        {id ? <a className="button" href="#">â† Documents</a> :
+        {id ? <a className="button" href="#">Documents</a> :
           <div className="flex flex-wrap gap-2">
           <input hidden id="import-file" type="file" accept=".txt,text/plain" onChange={e => {
             const file = e.currentTarget.files?.[0]
@@ -81,7 +81,7 @@ function App() {
         </div>}
       </div>
       {error && <div className="error" role="alert">{error} <button onClick={() => setAttempt(n => n + 1)}>Retry</button></div>}
-      {loading ? <p role="status">Loading documentsâ€¦</p> : !id && users.length > 0 && <>
+      {loading ? <p role="status">Loading documents&hellip;</p> : !id && users.length > 0 && <>
         <DocumentList heading="My Documents" documents={documents.filter(doc => doc.isOwner)} empty="Create or import a document to get started." />
         <DocumentList heading="Shared with Me" documents={documents.filter(doc => !doc.isOwner)} empty="Documents shared with this demo user will appear here." />
       </>}
@@ -93,7 +93,7 @@ function DocumentList({ heading, documents, empty }: { heading: string; document
   return <section className="collection"><h2>{heading}</h2>
     {documents.length ? <ul>{documents.map(doc => <li key={doc.id}>
       <a className="document" href={'#' + doc.id}>
-        <span className="file-icon" aria-hidden="true">â–¤</span>
+        <span className="file-icon" aria-hidden="true">&#9636;</span>
         <span className="details"><strong>{doc.title}</strong><small>{doc.isOwner ? 'Owned by you' : 'Owned by ' + doc.owner.name}</small></span>
         <time dateTime={doc.updatedAt}>{new Date(doc.updatedAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}</time>
       </a>

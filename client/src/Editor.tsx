@@ -63,7 +63,10 @@ export default function Editor({ draft, user, users }: { draft: Draft; user: num
   }, [])
 
   return <>
-    <header className="top editor-top"><a className="button" href="#">â† Documents</a>
+    <header className="top editor-top"><button className="button" onClick={async () => {
+      if (await save() && latest.current.revision === saved.current) location.hash = ''
+      else if (window.confirm('Leave this document with unsaved changes?')) location.hash = ''
+    }}>Documents</button>
       <span className="save-status" role="status">{status}</span>
       {draft.isOwner && <button className="button" onClick={() => setSharing(true)}>Share</button>}
       <button className="primary" disabled={status === 'Saving' || status === 'Saved'} onClick={save}>Save</button>
@@ -77,7 +80,7 @@ export default function Editor({ draft, user, users }: { draft: Draft; user: num
         <button aria-label="Underline" aria-pressed={active?.underline} onClick={() => editor?.chain().focus().toggleUnderline().run()}><u>U</u></button>
         <button aria-label="Heading 1" aria-pressed={active?.h1} onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()}>H1</button>
         <button aria-label="Heading 2" aria-pressed={active?.h2} onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()}>H2</button>
-        <button aria-label="Bullet list" aria-pressed={active?.bullets} onClick={() => editor?.chain().focus().toggleBulletList().run()}>â€¢ List</button>
+        <button aria-label="Bullet list" aria-pressed={active?.bullets} onClick={() => editor?.chain().focus().toggleBulletList().run()}>&bull; List</button>
         <button aria-label="Numbered list" aria-pressed={active?.numbers} onClick={() => editor?.chain().focus().toggleOrderedList().run()}>1. List</button>
       </div>
       <article className="paper">
@@ -118,10 +121,10 @@ function ShareDialog({ draft, user, users, close }: { draft: Draft; user: number
   }
 
   const available = users.filter(person => person.id !== user && !shares?.some(shared => shared.id === person.id))
-  return <dialog ref={dialog} onCancel={close} aria-labelledby="share-title" className="share-dialog">
+  return <dialog ref={dialog} onClose={close} aria-labelledby="share-title" className="share-dialog">
     <div className="flex items-center justify-between gap-3">
       <h2 id="share-title" className="text-lg font-semibold">Share document</h2>
-      <button className="button" onClick={close}>Close</button>
+      <button className="button" onClick={() => dialog.current?.close()}>Close</button>
     </div>
     <p className="my-3 text-sm text-slate-600">People you share with can edit this document.</p>
     {error && <p className="error" role="alert">{error}</p>}

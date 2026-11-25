@@ -47,7 +47,7 @@ public static class Documents
             if (document is null) return Missing();
             var title = input.Title?.Trim();
             if (string.IsNullOrEmpty(title) || title.Length > 120 || title.Contains('\0'))
-                return Error(400, "Enter a title of 1–120 characters.");
+                return Error(400, "Enter a title of 1 to 120 characters.");
             if (!ValidContent(input.Content))
                 return Error(400, "Provide valid TipTap document JSON, up to 2 MB.");
             document.Title = title;

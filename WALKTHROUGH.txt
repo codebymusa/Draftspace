@@ -1,0 +1,22 @@
+DraftSpace demo walkthrough
+
+0:00  Start Docker Compose with docker compose up --build -d.
+      Open http://127.0.0.1:8080 and choose Alex Morgan.
+
+0:20  Create a document and rename it to Release notes. Add a heading,
+      bold or underline selected words, and make a bullet or numbered list.
+      Wait for Saved, refresh, and verify the title and formatting.
+
+0:55  Open Share, select Jordan Lee, and grant access. Close the dialog.
+      Return to Documents and switch to Jordan. Find Release notes under
+      Shared with Me, open it, and edit a sentence. Jordan can edit the
+      document. Only Alex has sharing controls.
+
+1:30  Return to Documents and switch to Sam Rivera. Paste the document URL
+      in the address bar and observe the unavailable document message.
+
+1:50  Return to Documents and import a UTF-8 .txt file. Verify its contents
+      are editable. Try an invalid file to demonstrate validation.
+
+2:10  If demonstrating persistence, restart both containers with
+      docker compose restart. Reopen the document as Jordan.
