@@ -2,6 +2,39 @@
 
 The React client uses TipTap for editor state and sends JSON to a single ASP.NET Core API. Vite proxies API calls in development. The production container serves the built client and API from the same origin.
 
+## System architecture
+
+```mermaid
+flowchart TB
+    U[Reviewer browser]
+    subgraph R[Render web service - Docker container]
+        FE[React + TypeScript + Vite + TipTap]
+        API[ASP.NET Core 10 Minimal API]
+        DOC[Document creation, editing and autosave]
+        SHARE[Demo identity and sharing authorization]
+        IMPORT[UTF-8 text import and validation]
+        EF[Entity Framework Core + Npgsql]
+        FE -->|Same-origin REST / JSON| API
+        API --> DOC
+        API --> SHARE
+        API --> IMPORT
+        DOC --> EF
+        SHARE --> EF
+        IMPORT --> EF
+    end
+    subgraph DB[Render managed PostgreSQL 17]
+        PG[(Users / Documents / Shares)]
+    end
+    U -->|HTTPS| FE
+    EF -->|Database connection| PG
+```
+
+The production deployment packages the compiled React frontend and ASP.NET Core API in a single Docker image. The API accesses managed PostgreSQL through EF Core and Npgsql, storing TipTap documents as JSONB. Database credentials are supplied through environment configuration rather than committed to source control.
+
+In local development, Vite proxies API requests to ASP.NET Core and Docker Compose provides PostgreSQL with a persistent named volume.
+
+**Hosting limitation:** The Render free web service may spin down after inactivity. The first request may therefore take longer while the container starts. This is a deployment-tier trade-off, not a requirement for local execution.
+
 ## Data and access
 
 - User stores the three seeded demo identities.
